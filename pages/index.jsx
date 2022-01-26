@@ -56,7 +56,7 @@ export default function PaginaInicial() {
 				styleSheet={{
 					display: 'flex', alignItems: 'center', justifyContent: 'center',
 					backgroundColor: appConfig.theme.colors.primary[500],
-					backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+					backgroundImage: 'url(https://c.tenor.com/LqP4B1GKGqkAAAAd/casimiro.gif)',
 					backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
 				}}
 			>
@@ -83,7 +83,7 @@ export default function PaginaInicial() {
 							width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
 						}}
 					>
-						<Title tag="h2">Boas vindas de volta!</Title>
+						<Title tag="h2">A Live Já Vai Começar!</Title>
 						<Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
 							{appConfig.name}
 						</Text>
