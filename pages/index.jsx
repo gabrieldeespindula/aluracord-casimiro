@@ -64,15 +64,35 @@ export default function PaginaInicial() {
 					styleSheet={{
 						display: 'flex',
 						alignItems: 'center',
-						justifyContent: 'space-between',
+						justifyContent: {
+							xs: 'center',
+							sm: 'space-between',
+							lg: 'center'
+						},
 						flexDirection: {
 							xs: 'column',
 							sm: 'row',
+							lg: 'column'
 						},
-						width: '100%', maxWidth: '700px',
-						borderRadius: '5px', padding: '32px', margin: '16px',
+						width: 'calc(100% - 32px)', maxWidth: '700px',
+						height: { lg: '100%' }, maxHeight: { lg: '700px' },
+						borderRadius: {
+							xs: '5px',
+							sm: '5px',
+							lg: '50%'
+						}, padding: '32px', margin: '16px',
 						boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-						backgroundColor: appConfig.theme.colors.neutrals[700],
+						backgroundColor: {
+							xs: appConfig.theme.colors.neutrals[700],
+							sm: appConfig.theme.colors.neutrals[700],
+							lg: appConfig.theme.colors.neutrals[900]
+						},
+						backgroundImage: {
+							xs: 'url(https://image.winudf.com/v2/image1/Y29tLnppcHBlcjIubG9ja3NjcmVlbi52YXNjb19zY3JlZW5fMl8xNTU5ODE0MjQzXzA5Mg/screen-2.jpg?fakeurl=1&type=.jpg)',
+							sm: 'url(https://image.winudf.com/v2/image1/Y29tLnppcHBlcjIubG9ja3NjcmVlbi52YXNjb19zY3JlZW5fMl8xNTU5ODE0MjQzXzA5Mg/screen-2.jpg?fakeurl=1&type=.jpg)',
+							lg: 'url(https://imgcentauro-a.akamaihd.net/1300x1300/87972931/bola-de-futebol-de-campo-vasco-da-gama-basic-img.jpg)'
+						},
+						backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
 					}}
 				>
 					{/* Formulário */}
@@ -126,8 +146,9 @@ export default function PaginaInicial() {
 							border: '1px solid',
 							borderColor: appConfig.theme.colors.neutrals[999],
 							borderRadius: '10px',
-							flex: 1,
-							minHeight: '240px',
+							height: {
+								lg: 'min-content'
+							}
 						}}
 					>
 						<Image
