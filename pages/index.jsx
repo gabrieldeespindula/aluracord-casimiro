@@ -22,6 +22,7 @@ function Title(props) {
 
 export default function PaginaInicial() {
 	const [username, setUsername] = React.useState('');
+	const [disabledSubmit, setDisabledSubmitButton] = React.useState('true');
 	const router = useRouter();
 
 	return (
@@ -94,6 +95,8 @@ export default function PaginaInicial() {
 								function (event) {
 									const value = event.target.value;
 									setUsername(value);
+
+									setDisabledSubmitButton(value.length <= 2);
 								}
 							}
 							fullWidth
@@ -109,6 +112,7 @@ export default function PaginaInicial() {
 						<Button
 							type='submit'
 							label='Entrar'
+							disabled={disabledSubmit}
 							fullWidth
 							buttonColors={{
 								contrastColor: appConfig.theme.colors.neutrals["000"],
