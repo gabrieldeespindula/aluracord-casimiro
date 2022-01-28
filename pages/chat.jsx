@@ -1,10 +1,25 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
+import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 
 export default function ChatPage() {
+	console.log(useRouter());
 	const [message, setMessage] = React.useState();
 	const [messageList, setMessageList] = React.useState([]);
+
+	function handleNewMessage(newMessage) {
+		const message = {
+			id: messageList.length + 1,
+			from: 'username',
+			text: newMessage
+		}
+		setMessageList([
+			message,
+			...messageList,
+		])
+		setMessage('');
+	}
 
 	return (
 		<Box
@@ -44,20 +59,13 @@ export default function ChatPage() {
 					}}
 				>
 
-					{/* <MessageList mensagens={[]} /> */}
-
-					{/* Lista {messageList} */}
+					<MessageList messages={messageList} />
 
 					<Box
 						as="form"
 						styleSheet={{
 							display: 'flex',
 							alignItems: 'center',
-							position: 'absolute',
-							bottom: '20px',
-							left: '20px',
-							right: '20px',
-							justifyContent: 'center'
 						}}
 					>
 						<TextField
@@ -68,11 +76,8 @@ export default function ChatPage() {
 
 							onKeyPress={event => {
 								if (event.key === 'Enter') {
-									setMessageList([
-										...messageList,
-										message
-									])
-									setMessage('');
+									event.preventDefault();
+									handleNewMessage(message);
 								}
 							}}
 							value={message}
@@ -115,7 +120,6 @@ function Header() {
 }
 
 function MessageList(props) {
-	console.log('MessageList', props);
 	return (
 		<Box
 			tag="ul"
@@ -129,49 +133,53 @@ function MessageList(props) {
 			}}
 		>
 
-			<Text
-				key={mensagem.id}
-				tag="li"
-				styleSheet={{
-					borderRadius: '5px',
-					padding: '6px',
-					marginBottom: '12px',
-					hover: {
-						backgroundColor: appConfig.theme.colors.neutrals[700],
-					}
-				}}
-			>
-				<Box
-					styleSheet={{
-						marginBottom: '8px',
-					}}
-				>
-					<Image
-						styleSheet={{
-							width: '20px',
-							height: '20px',
-							borderRadius: '50%',
-							display: 'inline-block',
-							marginRight: '8px',
-						}}
-						src={`https://github.com/vanessametonini.png`}
-					/>
-					<Text tag="strong">
-						{mensagem.de}
-					</Text>
+			{props.messages.map((actualMessage) => {
+				return (
 					<Text
+						key={actualMessage.id}
+						tag="li"
 						styleSheet={{
-							fontSize: '10px',
-							marginLeft: '8px',
-							color: appConfig.theme.colors.neutrals[300],
+							borderRadius: '5px',
+							padding: '6px',
+							marginBottom: '12px',
+							hover: {
+								backgroundColor: appConfig.theme.colors.neutrals[700],
+							}
 						}}
-						tag="span"
 					>
-						{(new Date().toLocaleDateString())}
+						<Box
+							styleSheet={{
+								marginBottom: '8px',
+							}}
+						>
+							<Image
+								styleSheet={{
+									width: '20px',
+									height: '20px',
+									borderRadius: '50%',
+									display: 'inline-block',
+									marginRight: '8px',
+								}}
+								src={`https://github.com/vanessametonini.png`}
+							/>
+							<Text tag="strong">
+								{actualMessage.from}
+							</Text>
+							<Text
+								styleSheet={{
+									fontSize: '10px',
+									marginLeft: '8px',
+									color: appConfig.theme.colors.neutrals[300],
+								}}
+								tag="span"
+							>
+								{(new Date().toLocaleDateString())}
+							</Text>
+						</Box>
+						{actualMessage.text}
 					</Text>
-				</Box>
-				{mensagem.texto}
-			</Text>
+				)
+			})}
 		</Box>
 	)
 }
