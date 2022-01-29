@@ -2,16 +2,27 @@ import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ1OTUyNywiZXhwIjoxOTU5MDM1NTI3fQ.wXWeZGgrfHGAxh-VjO4vM8k9CdI-FxTKNs6HBkUetsc';
+const SUPABASE_URL = 'https://zuwkpddkqbciiykoggfo.supabase.co';
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+function CheckRealTimeMessage(addMessage) {
+	return supabaseClient
+		.from('messages')
+		.on('INSERT', (res) => {
+			addMessage(res.new);
+		})
+		.subscribe();
+}
 
 export default function ChatPage() {
+	const router = useRouter();
+	const username = router.query.username;
 	const [message, setMessage] = React.useState();
 	const [messageList, setMessageList] = React.useState([]);
-
-	const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ1OTUyNywiZXhwIjoxOTU5MDM1NTI3fQ.wXWeZGgrfHGAxh-VjO4vM8k9CdI-FxTKNs6HBkUetsc';
-	const SUPABASE_URL = 'https://zuwkpddkqbciiykoggfo.supabase.co';
-
-	const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 	React.useEffect(() => {
 		supabaseClient
@@ -22,32 +33,40 @@ export default function ChatPage() {
 			.then(({ data }) => {
 				setMessageList(data);
 			});
+
+		const subscription = CheckRealTimeMessage((newMessage) => {
+			setMessageList((actualValue) => {
+				console.log('actualValue:', actualValue);
+				return [
+					newMessage,
+					...actualValue,
+				]
+			});
+		});
+
+		return () => {
+			subscription.unsubscribe();
+		}
+
 	}, [])
 
 
-	function handleNewMessage(newMessage) {
+	async function handleNewMessage(newMessage) {
 		if (newMessage != '') {
 			const message = {
-				from: 'gabrieldeespindula',
+				from: username,
 				text: newMessage,
 			}
 
-			supabaseClient
+			await supabaseClient
 				.from('messages')
-				.insert([message])
-				.then(({ data }) => {
-					setMessageList([
-						data[0],
-						...messageList
-					])
-				})
+				.insert([message]);
 
 			setMessage('');
 		}
 	}
 
 	async function removeMessageById(id) {
-		console.log(id);
 		const newMessages = messageList.filter(message => message.id != id);
 		setMessageList(newMessages);
 		await supabaseClient
@@ -115,9 +134,11 @@ export default function ChatPage() {
 									handleNewMessage(message);
 								}
 							}}
+
 							value={message}
 							placeholder="Insira sua mensagem aqui..."
 							type="textarea"
+
 							styleSheet={{
 								width: 'calc(100% - 56px)',
 								border: '0',
@@ -129,6 +150,13 @@ export default function ChatPage() {
 								color: appConfig.theme.colors.neutrals[200],
 							}}
 						/>
+
+						<ButtonSendSticker
+							onStickerClick={(sticker) => {
+								handleNewMessage(':sticker: ' + sticker);
+							}}
+						/>
+
 						<Button iconName='FaArrowRight'
 							styleSheet={{
 								marginBottom: '8px',
@@ -265,7 +293,16 @@ function MessageList(props) {
 								onClick={() => props.removeMessageById(actualMessage.id)}
 							></Button>
 						</Box>
-						{actualMessage.text}
+						{/* {actualMessage.text} */}
+
+						{actualMessage.text.startsWith(':sticker:')
+							? (
+								<Image src={actualMessage.text.replace(':sticker:', '')} />
+							)
+							: (
+								actualMessage.text
+							)}
+
 					</Text>
 				)
 			})}
