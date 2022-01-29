@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 
 export default function ChatPage() {
-	console.log(useRouter());
 	const [message, setMessage] = React.useState();
 	const [messageList, setMessageList] = React.useState([]);
 
@@ -61,7 +60,7 @@ export default function ChatPage() {
 					}}
 				>
 
-					<MessageList messages={messageList} />
+					<MessageList messages={messageList} setMessages={setMessageList} />
 
 					<Box
 						as="form"
@@ -147,6 +146,13 @@ function Header() {
 }
 
 function MessageList(props) {
+	const messages = props.messages;
+
+	function removeMessageById(id) {
+		const newMessages = messages.filter(message => message.id != id);
+		props.setMessages(newMessages);
+	}
+
 	return (
 		<Box
 			tag="ul"
@@ -160,7 +166,7 @@ function MessageList(props) {
 			}}
 		>
 
-			{props.messages.map((actualMessage) => {
+			{messages.map((actualMessage) => {
 				return (
 					<Text
 						key={actualMessage.id}
