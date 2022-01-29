@@ -2,26 +2,58 @@ import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
 
 export default function ChatPage() {
 	const [message, setMessage] = React.useState();
 	const [messageList, setMessageList] = React.useState([]);
 
+	const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ1OTUyNywiZXhwIjoxOTU5MDM1NTI3fQ.wXWeZGgrfHGAxh-VjO4vM8k9CdI-FxTKNs6HBkUetsc';
+	const SUPABASE_URL = 'https://zuwkpddkqbciiykoggfo.supabase.co';
+
+	const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+	React.useEffect(() => {
+		supabaseClient
+			.from('messages')
+			.select('*')
+			.eq('status', 'true')
+			.order('id', { ascending: false })
+			.then(({ data }) => {
+				setMessageList(data);
+			});
+	}, [])
+
+
 	function handleNewMessage(newMessage) {
 		if (newMessage != '') {
 			const message = {
-				id: messageList.length + 1,
 				from: 'gabrieldeespindula',
-				date: (new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()),
 				text: newMessage,
-				edited: false
 			}
-			setMessageList([
-				message,
-				...messageList,
-			])
+
+			supabaseClient
+				.from('messages')
+				.insert([message])
+				.then(({ data }) => {
+					setMessageList([
+						data[0],
+						...messageList
+					])
+				})
+
 			setMessage('');
 		}
+	}
+
+	async function removeMessageById(id) {
+		console.log(id);
+		const newMessages = messageList.filter(message => message.id != id);
+		setMessageList(newMessages);
+		await supabaseClient
+			.from('messages')
+			.update([{ status: false }])
+			.eq('id', id);
 	}
 
 	return (
@@ -62,7 +94,7 @@ export default function ChatPage() {
 					}}
 				>
 
-					<MessageList messages={messageList} setMessages={setMessageList} />
+					<MessageList messages={messageList} removeMessageById={removeMessageById} />
 
 					<Box
 						as="form"
@@ -150,11 +182,6 @@ function Header() {
 function MessageList(props) {
 	const messages = props.messages;
 
-	function removeMessageById(id) {
-		const newMessages = messages.filter(message => message.id != id);
-		props.setMessages(newMessages);
-	}
-
 	return (
 		<Box
 			tag="ul"
@@ -197,7 +224,7 @@ function MessageList(props) {
 									display: 'inline-block',
 									marginRight: '8px',
 								}}
-								src={`https://github.com/gabrieldeespindula.png`}
+								src={`https://github.com/${actualMessage.from}.png`}
 							/>
 							<Text tag="strong">
 								{actualMessage.from}
@@ -210,7 +237,7 @@ function MessageList(props) {
 								}}
 								tag="span"
 							>
-								{actualMessage.date}
+								{new Date(actualMessage.created_at).toLocaleString()}
 							</Text>
 							<Button
 								iconName='FaTrashAlt'
@@ -235,7 +262,7 @@ function MessageList(props) {
 									mainColorHighlight: appConfig.theme.colors.primary[500],
 								}}
 
-								onClick={() => removeMessageById(actualMessage.id)}
+								onClick={() => props.removeMessageById(actualMessage.id)}
 							></Button>
 						</Box>
 						{actualMessage.text}
