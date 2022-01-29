@@ -12,7 +12,9 @@ export default function ChatPage() {
 		const message = {
 			id: messageList.length + 1,
 			from: 'username',
-			text: newMessage
+			date: (new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()),
+			text: newMessage,
+			edited: false
 		}
 		setMessageList([
 			message,
@@ -84,7 +86,7 @@ export default function ChatPage() {
 							placeholder="Insira sua mensagem aqui..."
 							type="textarea"
 							styleSheet={{
-								width: '100%',
+								width: 'calc(100% - 56px)',
 								border: '0',
 								resize: 'none',
 								borderRadius: '5px',
@@ -94,6 +96,31 @@ export default function ChatPage() {
 								color: appConfig.theme.colors.neutrals[200],
 							}}
 						/>
+						<Button iconName='FaArrowRight'
+							styleSheet={{
+								marginBottom: '8px',
+								fontSize: '1.5rem',
+								hover: {
+									backgroundColor: appConfig.theme.colors.primary[800]
+								},
+								focus: {
+									backgroundColor: appConfig.theme.colors.primary[900]
+								},
+								width: '44px',
+								height: '44px',
+							}}
+
+							buttonColors={{
+								contrastColor: appConfig.theme.colors.neutrals['000'],
+								mainColor: appConfig.theme.colors.primary[500],
+								mainColorLight: appConfig.theme.colors.primary[500],
+								mainColorStrong: appConfig.theme.colors.primary[500],
+								mainColorHighlight: appConfig.theme.colors.neutrals[500],
+							}}
+
+							onClick={() => { handleNewMessage(message); }}
+						>
+						</Button>
 					</Box>
 				</Box>
 			</Box>
@@ -173,7 +200,7 @@ function MessageList(props) {
 								}}
 								tag="span"
 							>
-								{(new Date().toLocaleDateString())}
+								{actualMessage.date}
 							</Text>
 						</Box>
 						{actualMessage.text}
