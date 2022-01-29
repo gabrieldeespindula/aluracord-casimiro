@@ -122,7 +122,7 @@ export default function ChatPage() {
 					}}
 				>
 
-					<MessageList messages={messageList} removeMessageById={removeMessageById} />
+					<MessageList messages={messageList} removeMessageById={removeMessageById} username={username} />
 
 					<Box
 						as="form"
@@ -218,6 +218,7 @@ function Header() {
 
 function MessageList(props) {
 	const messages = props.messages;
+	const username = props.username;
 
 	return (
 		<Box
@@ -276,31 +277,35 @@ function MessageList(props) {
 							>
 								{new Date(actualMessage.created_at).toLocaleString()}
 							</Text>
-							<Button
-								iconName='FaTrashAlt'
-								variant="tertiary"
-								styleSheet={{
-									maxWidth: '20px',
-									maxHeight: '20px',
-									hover: {
-										backgroundColor: appConfig.theme.colors.primary[800]
-									},
-									focus: {
-										backgroundColor: appConfig.theme.colors.primary[900]
-									},
-									marginLeft: 'auto',
-									marginRight: '0'
-								}}
-								buttonColors={{
-									contrastColor: appConfig.theme.colors.neutrals[999],
-									mainColor: appConfig.theme.colors.primary[800],
-									mainColorLight: appConfig.theme.colors.primary[500],
-									mainColorStrong: appConfig.theme.colors.primary[500],
-									mainColorHighlight: appConfig.theme.colors.primary[500],
-								}}
+							{
+								username == actualMessage.from && (
+									<Button
+										iconName='FaTrashAlt'
+										variant="tertiary"
+										styleSheet={{
+											maxWidth: '20px',
+											maxHeight: '20px',
+											hover: {
+												backgroundColor: appConfig.theme.colors.primary[800]
+											},
+											focus: {
+												backgroundColor: appConfig.theme.colors.primary[900]
+											},
+											marginLeft: 'auto',
+											marginRight: '0'
+										}}
+										buttonColors={{
+											contrastColor: appConfig.theme.colors.neutrals[999],
+											mainColor: appConfig.theme.colors.primary[800],
+											mainColorLight: appConfig.theme.colors.primary[500],
+											mainColorStrong: appConfig.theme.colors.primary[500],
+											mainColorHighlight: appConfig.theme.colors.primary[500],
+										}}
 
-								onClick={() => props.removeMessageById(actualMessage.id)}
-							></Button>
+										onClick={() => props.removeMessageById(actualMessage.id)}
+									></Button>
+								)
+							}
 						</Box>
 
 						{actualMessage.text.startsWith(':sticker:')
