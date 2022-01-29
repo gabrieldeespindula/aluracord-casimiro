@@ -149,7 +149,10 @@ export default function ChatPage() {
 							type="textarea"
 
 							styleSheet={{
-								width: 'calc(100% - 56px)',
+								width: {
+									xs: 'calc(100% - 45px)',
+									sm: 'calc(100% - 111px)'
+								},
 								border: '0',
 								resize: 'none',
 								borderRadius: '5px',
@@ -168,16 +171,35 @@ export default function ChatPage() {
 
 						<Button iconName='FaArrowRight'
 							styleSheet={{
+								borderRadius: '50%',
+								padding: '0 3px 0 0',
+								maxWidth: {
+									xs: '20px',
+									sm: '44px'
+								},
+								maxHeight: {
+									xs: '20px',
+									sm: '44px'
+								},
+								fontSize: {
+									xs: '12px',
+									sm: '20px'
+								},
 								marginBottom: '8px',
-								fontSize: '1.5rem',
+								lineHeight: '0',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
 								hover: {
 									backgroundColor: appConfig.theme.colors.primary[800]
 								},
 								focus: {
 									backgroundColor: appConfig.theme.colors.primary[900]
 								},
-								width: '44px',
-								height: '44px',
+								marginLeft: {
+									xs: '5px',
+									sm: '15px'
+								}
 							}}
 
 							buttonColors={{
