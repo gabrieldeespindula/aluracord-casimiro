@@ -8,18 +8,20 @@ export default function ChatPage() {
 	const [messageList, setMessageList] = React.useState([]);
 
 	function handleNewMessage(newMessage) {
-		const message = {
-			id: messageList.length + 1,
-			from: 'username',
-			date: (new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()),
-			text: newMessage,
-			edited: false
+		if (newMessage != '') {
+			const message = {
+				id: messageList.length + 1,
+				from: 'username',
+				date: (new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()),
+				text: newMessage,
+				edited: false
+			}
+			setMessageList([
+				message,
+				...messageList,
+			])
+			setMessage('');
 		}
-		setMessageList([
-			message,
-			...messageList,
-		])
-		setMessage('');
 	}
 
 	return (
