@@ -77,7 +77,7 @@ export default function PaginaInicial() {
 						onSubmit={
 							function (ev) {
 								ev.preventDefault();
-								router.push('/chat');
+								router.push(`/chat?username=${username}`);
 							}
 						}
 						styleSheet={{
