@@ -177,6 +177,8 @@ function MessageList(props) {
 						<Box
 							styleSheet={{
 								marginBottom: '8px',
+								display: 'flex',
+								alignItems: 'center'
 							}}
 						>
 							<Image
@@ -202,6 +204,31 @@ function MessageList(props) {
 							>
 								{actualMessage.date}
 							</Text>
+							<Button
+								iconName='FaTrashAlt'
+								variant="tertiary"
+								styleSheet={{
+									maxWidth: '20px',
+									maxHeight: '20px',
+									hover: {
+										backgroundColor: appConfig.theme.colors.primary[800]
+									},
+									focus: {
+										backgroundColor: appConfig.theme.colors.primary[900]
+									},
+									marginLeft: 'auto',
+									marginRight: '0'
+								}}
+								buttonColors={{
+									contrastColor: appConfig.theme.colors.neutrals[999],
+									mainColor: appConfig.theme.colors.neutrals[800],
+									mainColorLight: appConfig.theme.colors.primary[500],
+									mainColorStrong: appConfig.theme.colors.primary[500],
+									mainColorHighlight: appConfig.theme.colors.neutrals[500],
+								}}
+
+								onClick={() => removeMessageById(actualMessage.id)}
+							></Button>
 						</Box>
 						{actualMessage.text}
 					</Text>
