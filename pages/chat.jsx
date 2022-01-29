@@ -9,11 +9,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5v
 const SUPABASE_URL = 'https://zuwkpddkqbciiykoggfo.supabase.co';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-function CheckRealTimeMessage(addMessage) {
+function CheckRealTimeMessage(addMessage, updatedMessageFunction) {
 	return supabaseClient
 		.from('messages')
 		.on('INSERT', (res) => {
 			addMessage(res.new);
+		})
+		.on('UPDATE', (res) => {
+			updatedMessageFunction(res.new);
 		})
 		.subscribe();
 }
@@ -34,15 +37,23 @@ export default function ChatPage() {
 				setMessageList(data);
 			});
 
-		const subscription = CheckRealTimeMessage((newMessage) => {
-			setMessageList((actualValue) => {
-				console.log('actualValue:', actualValue);
-				return [
-					newMessage,
-					...actualValue,
-				]
+		const subscription = CheckRealTimeMessage(
+			(newMessage) => {
+				setMessageList((actualValueList) => {
+					return [
+						newMessage,
+						...actualValueList,
+					]
+				});
+			}, (updatedMessage) => {
+				if (!updatedMessage.status) {
+					setMessageList((actualValueList) => {
+						const newMessages = actualValueList.filter(message => message.id != updatedMessage.id);
+						setMessageList(newMessages);
+					});
+				}
+
 			});
-		});
 
 		return () => {
 			subscription.unsubscribe();
@@ -67,8 +78,6 @@ export default function ChatPage() {
 	}
 
 	async function removeMessageById(id) {
-		const newMessages = messageList.filter(message => message.id != id);
-		setMessageList(newMessages);
 		await supabaseClient
 			.from('messages')
 			.update([{ status: false }])
@@ -113,7 +122,7 @@ export default function ChatPage() {
 					}}
 				>
 
-					<MessageList messages={messageList} removeMessageById={removeMessageById} />
+					<MessageList messages={messageList} removeMessageById={removeMessageById} username={username} />
 
 					<Box
 						as="form"
@@ -140,7 +149,10 @@ export default function ChatPage() {
 							type="textarea"
 
 							styleSheet={{
-								width: 'calc(100% - 56px)',
+								width: {
+									xs: 'calc(100% - 45px)',
+									sm: 'calc(100% - 111px)'
+								},
 								border: '0',
 								resize: 'none',
 								borderRadius: '5px',
@@ -159,16 +171,35 @@ export default function ChatPage() {
 
 						<Button iconName='FaArrowRight'
 							styleSheet={{
+								borderRadius: '50%',
+								padding: '0 3px 0 0',
+								maxWidth: {
+									xs: '20px',
+									sm: '44px'
+								},
+								maxHeight: {
+									xs: '20px',
+									sm: '44px'
+								},
+								fontSize: {
+									xs: '12px',
+									sm: '20px'
+								},
 								marginBottom: '8px',
-								fontSize: '1.5rem',
+								lineHeight: '0',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
 								hover: {
 									backgroundColor: appConfig.theme.colors.primary[800]
 								},
 								focus: {
 									backgroundColor: appConfig.theme.colors.primary[900]
 								},
-								width: '44px',
-								height: '44px',
+								marginLeft: {
+									xs: '5px',
+									sm: '15px'
+								}
 							}}
 
 							buttonColors={{
@@ -192,7 +223,7 @@ export default function ChatPage() {
 function Header() {
 	return (
 		<>
-			<Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
+			<Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: appConfig.theme.colors.primary[900] }} >
 				<Text variant='heading5'>
 					Chat
 				</Text>
@@ -201,6 +232,13 @@ function Header() {
 					colorVariant='neutral'
 					label='Logout'
 					href="/"
+					buttonColors={{
+						contrastColor: appConfig.theme.colors.neutrals[700],
+						mainColor: appConfig.theme.colors.primary[200],
+						mainColorLight: appConfig.theme.colors.primary[200],
+						mainColorStrong: appConfig.theme.colors.primary[300],
+						mainColorHighlight: appConfig.theme.colors.primary[200],
+					}}
 				/>
 			</Box>
 		</>
@@ -209,6 +247,7 @@ function Header() {
 
 function MessageList(props) {
 	const messages = props.messages;
+	const username = props.username;
 
 	return (
 		<Box
@@ -267,33 +306,36 @@ function MessageList(props) {
 							>
 								{new Date(actualMessage.created_at).toLocaleString()}
 							</Text>
-							<Button
-								iconName='FaTrashAlt'
-								variant="tertiary"
-								styleSheet={{
-									maxWidth: '20px',
-									maxHeight: '20px',
-									hover: {
-										backgroundColor: appConfig.theme.colors.primary[800]
-									},
-									focus: {
-										backgroundColor: appConfig.theme.colors.primary[900]
-									},
-									marginLeft: 'auto',
-									marginRight: '0'
-								}}
-								buttonColors={{
-									contrastColor: appConfig.theme.colors.neutrals[999],
-									mainColor: appConfig.theme.colors.primary[800],
-									mainColorLight: appConfig.theme.colors.primary[500],
-									mainColorStrong: appConfig.theme.colors.primary[500],
-									mainColorHighlight: appConfig.theme.colors.primary[500],
-								}}
+							{
+								username == actualMessage.from && (
+									<Button
+										iconName='FaTrashAlt'
+										variant="tertiary"
+										styleSheet={{
+											maxWidth: '20px',
+											maxHeight: '20px',
+											hover: {
+												backgroundColor: appConfig.theme.colors.primary[800]
+											},
+											focus: {
+												backgroundColor: appConfig.theme.colors.primary[900]
+											},
+											marginLeft: 'auto',
+											marginRight: '0'
+										}}
+										buttonColors={{
+											contrastColor: appConfig.theme.colors.neutrals[999],
+											mainColor: appConfig.theme.colors.primary[800],
+											mainColorLight: appConfig.theme.colors.primary[500],
+											mainColorStrong: appConfig.theme.colors.primary[500],
+											mainColorHighlight: appConfig.theme.colors.primary[500],
+										}}
 
-								onClick={() => props.removeMessageById(actualMessage.id)}
-							></Button>
+										onClick={() => props.removeMessageById(actualMessage.id)}
+									></Button>
+								)
+							}
 						</Box>
-						{/* {actualMessage.text} */}
 
 						{actualMessage.text.startsWith(':sticker:')
 							? (
@@ -301,7 +343,8 @@ function MessageList(props) {
 							)
 							: (
 								actualMessage.text
-							)}
+							)
+						}
 
 					</Text>
 				)
