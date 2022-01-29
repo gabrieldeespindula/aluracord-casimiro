@@ -9,11 +9,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5v
 const SUPABASE_URL = 'https://zuwkpddkqbciiykoggfo.supabase.co';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-function CheckRealTimeMessage(addMessage) {
+function CheckRealTimeMessage(addMessage, updatedMessageFunction) {
 	return supabaseClient
 		.from('messages')
 		.on('INSERT', (res) => {
 			addMessage(res.new);
+		})
+		.on('UPDATE', (res) => {
+			updatedMessageFunction(res.new);
 		})
 		.subscribe();
 }
@@ -34,15 +37,23 @@ export default function ChatPage() {
 				setMessageList(data);
 			});
 
-		const subscription = CheckRealTimeMessage((newMessage) => {
-			setMessageList((actualValue) => {
-				console.log('actualValue:', actualValue);
-				return [
-					newMessage,
-					...actualValue,
-				]
+		const subscription = CheckRealTimeMessage(
+			(newMessage) => {
+				setMessageList((actualValueList) => {
+					return [
+						newMessage,
+						...actualValueList,
+					]
+				});
+			}, (updatedMessage) => {
+				if (!updatedMessage.status) {
+					setMessageList((actualValueList) => {
+						const newMessages = actualValueList.filter(message => message.id != updatedMessage.id);
+						setMessageList(newMessages);
+					});
+				}
+
 			});
-		});
 
 		return () => {
 			subscription.unsubscribe();
@@ -67,8 +78,6 @@ export default function ChatPage() {
 	}
 
 	async function removeMessageById(id) {
-		const newMessages = messageList.filter(message => message.id != id);
-		setMessageList(newMessages);
 		await supabaseClient
 			.from('messages')
 			.update([{ status: false }])
@@ -293,7 +302,6 @@ function MessageList(props) {
 								onClick={() => props.removeMessageById(actualMessage.id)}
 							></Button>
 						</Box>
-						{/* {actualMessage.text} */}
 
 						{actualMessage.text.startsWith(':sticker:')
 							? (
@@ -301,7 +309,8 @@ function MessageList(props) {
 							)
 							: (
 								actualMessage.text
-							)}
+							)
+						}
 
 					</Text>
 				)
