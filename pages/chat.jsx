@@ -11,7 +11,7 @@ export default function ChatPage() {
 		if (newMessage != '') {
 			const message = {
 				id: messageList.length + 1,
-				from: 'username',
+				from: 'gabrieldeespindula',
 				date: (new Date().toLocaleDateString()) + ' ' + (new Date().toLocaleTimeString()),
 				text: newMessage,
 				edited: false
@@ -197,7 +197,7 @@ function MessageList(props) {
 									display: 'inline-block',
 									marginRight: '8px',
 								}}
-								src={`https://github.com/vanessametonini.png`}
+								src={`https://github.com/gabrieldeespindula.png`}
 							/>
 							<Text tag="strong">
 								{actualMessage.from}
@@ -229,10 +229,10 @@ function MessageList(props) {
 								}}
 								buttonColors={{
 									contrastColor: appConfig.theme.colors.neutrals[999],
-									mainColor: appConfig.theme.colors.neutrals[800],
+									mainColor: appConfig.theme.colors.primary[800],
 									mainColorLight: appConfig.theme.colors.primary[500],
 									mainColorStrong: appConfig.theme.colors.primary[500],
-									mainColorHighlight: appConfig.theme.colors.neutrals[500],
+									mainColorHighlight: appConfig.theme.colors.primary[500],
 								}}
 
 								onClick={() => removeMessageById(actualMessage.id)}
