@@ -223,7 +223,7 @@ export default function ChatPage() {
 function Header() {
 	return (
 		<>
-			<Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
+			<Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: appConfig.theme.colors.primary[900] }} >
 				<Text variant='heading5'>
 					Chat
 				</Text>
@@ -232,6 +232,13 @@ function Header() {
 					colorVariant='neutral'
 					label='Logout'
 					href="/"
+					buttonColors={{
+						contrastColor: appConfig.theme.colors.neutrals[700],
+						mainColor: appConfig.theme.colors.primary[200],
+						mainColorLight: appConfig.theme.colors.primary[200],
+						mainColorStrong: appConfig.theme.colors.primary[300],
+						mainColorHighlight: appConfig.theme.colors.primary[200],
+					}}
 				/>
 			</Box>
 		</>

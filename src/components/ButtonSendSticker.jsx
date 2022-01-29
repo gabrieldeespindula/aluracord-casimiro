@@ -45,7 +45,7 @@ export function ButtonSendSticker(props) {
 					mainColorStrong: appConfig.theme.colors.neutrals[500],
 					mainColorHighlight: appConfig.theme.colors.neutrals[900],
 				}}
-				label="🙏"
+				label="🔥 "
 				onClick={() => setOpenState(!isOpen)}
 			/>
 			{isOpen && (
