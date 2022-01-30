@@ -269,6 +269,8 @@ function MessageList(props) {
 		>
 
 			{messages.map((actualMessage) => {
+				const [imgLink, setImgLink] = React.useState(`https://github.com/${actualMessage.from}.png`);
+
 				return (
 					<Text
 						key={actualMessage.id}
@@ -299,7 +301,12 @@ function MessageList(props) {
 									display: 'inline-block',
 									marginRight: '8px',
 								}}
-								src={`https://github.com/${actualMessage.from}.png`}
+								src={imgLink}
+
+								onError={() => {
+									setImgLink('https://pbs.twimg.com/profile_images/1429865698684178432/ZK3KmpzI_400x400.jpg');
+								}}
+
 							/>
 							<Text tag="strong">
 								{actualMessage.from}
