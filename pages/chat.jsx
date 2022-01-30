@@ -360,8 +360,6 @@ function MessageList(props) {
 
 function ImagemUser(props) {
 	const [image, setImage] = React.useState(`https://github.com/${props.from}.png`);
-	console.log(props.from);
-	console.log(parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0);
 	return (
 		<Image
 			styleSheet={{
@@ -374,8 +372,6 @@ function ImagemUser(props) {
 			src={image}
 
 			onError={() => {
-				console.log(appConfig.profileImgs[parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0]);
-				console.log(parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0);
 				setImage(appConfig.profileImgs[parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0]);
 			}}
 		/>
