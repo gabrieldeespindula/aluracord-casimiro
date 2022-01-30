@@ -123,6 +123,23 @@ export default function PaginaInicial() {
 								mainColorStrong: appConfig.theme.colors.primary[600],
 							}}
 						/>
+
+						<Button
+							label='Entrar como um Cazé'
+							fullWidth
+							styleSheet={{
+								marginTop: '8px'
+							}}
+							buttonColors={{
+								contrastColor: appConfig.theme.colors.primary["000"],
+								mainColor: appConfig.theme.colors.neutrals[500],
+								mainColorLight: appConfig.theme.colors.neutrals[400],
+								mainColorStrong: appConfig.theme.colors.neutrals[600],
+							}}
+							onClick={() => {
+								router.push(`/chat`);
+							}}
+						/>
 					</Box>
 					{/* Formulário */}
 
