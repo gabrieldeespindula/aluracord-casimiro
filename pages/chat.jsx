@@ -8,7 +8,7 @@ import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ1OTUyNywiZXhwIjoxOTU5MDM1NTI3fQ.wXWeZGgrfHGAxh-VjO4vM8k9CdI-FxTKNs6HBkUetsc';
 const SUPABASE_URL = 'https://zuwkpddkqbciiykoggfo.supabase.co';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-const dafultUsername = `Anonymous${(Math.floor(Math.random() * (9999 - 1 + 1)) + 1).toString()}`;
+const dafultUsername = `Cazé_${(Math.floor(Math.random() * (9999 - 1 + 1)) + 1).toString()}`;
 
 function CheckRealTimeMessage(addMessage, updatedMessageFunction) {
 	return supabaseClient
@@ -289,21 +289,8 @@ function MessageList(props) {
 								alignItems: 'center'
 							}}
 						>
-							<Image
-								styleSheet={{
-									width: '20px',
-									height: '20px',
-									borderRadius: '50%',
-									display: 'inline-block',
-									marginRight: '8px',
-								}}
-								src={`https://github.com/${actualMessage.from}.png`}
+							<ImagemUser from={actualMessage.from}></ImagemUser>
 
-								onError={(element) => {
-
-								}}
-
-							/>
 							<Text tag="strong">
 								{actualMessage.from}
 							</Text>
@@ -368,5 +355,29 @@ function MessageList(props) {
 			})}
 
 		</Box>
+	)
+}
+
+function ImagemUser(props) {
+	const [image, setImage] = React.useState(`https://github.com/${props.from}.png`);
+	console.log(props.from);
+	console.log(parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0);
+	return (
+		<Image
+			styleSheet={{
+				width: '20px',
+				height: '20px',
+				borderRadius: '50%',
+				display: 'inline-block',
+				marginRight: '8px',
+			}}
+			src={image}
+
+			onError={() => {
+				console.log(appConfig.profileImgs[parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0]);
+				console.log(parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0);
+				setImage(appConfig.profileImgs[parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0]);
+			}}
+		/>
 	)
 }
