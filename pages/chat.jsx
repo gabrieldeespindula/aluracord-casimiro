@@ -8,6 +8,7 @@ import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ1OTUyNywiZXhwIjoxOTU5MDM1NTI3fQ.wXWeZGgrfHGAxh-VjO4vM8k9CdI-FxTKNs6HBkUetsc';
 const SUPABASE_URL = 'https://zuwkpddkqbciiykoggfo.supabase.co';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const dafultUsername = `Cazé_${(Math.floor(Math.random() * (9999 - 1 + 1)) + 1).toString()}`;
 
 function CheckRealTimeMessage(addMessage, updatedMessageFunction) {
 	return supabaseClient
@@ -23,11 +24,13 @@ function CheckRealTimeMessage(addMessage, updatedMessageFunction) {
 
 export default function ChatPage() {
 	const router = useRouter();
-	const username = router.query.username;
+	const username = router.query.username || dafultUsername;
+
 	const [message, setMessage] = React.useState();
 	const [messageList, setMessageList] = React.useState([]);
 
 	React.useEffect(() => {
+
 		supabaseClient
 			.from('messages')
 			.select('*')
@@ -263,6 +266,7 @@ function MessageList(props) {
 		>
 
 			{messages.map((actualMessage) => {
+
 				return (
 					<Text
 						key={actualMessage.id}
@@ -285,16 +289,8 @@ function MessageList(props) {
 								alignItems: 'center'
 							}}
 						>
-							<Image
-								styleSheet={{
-									width: '20px',
-									height: '20px',
-									borderRadius: '50%',
-									display: 'inline-block',
-									marginRight: '8px',
-								}}
-								src={`https://github.com/${actualMessage.from}.png`}
-							/>
+							<ImagemUser from={actualMessage.from}></ImagemUser>
+
 							<Text tag="strong">
 								{actualMessage.from}
 							</Text>
@@ -357,6 +353,31 @@ function MessageList(props) {
 					</Text>
 				)
 			})}
+
 		</Box>
+	)
+}
+
+function ImagemUser(props) {
+	const [image, setImage] = React.useState(`https://github.com/${props.from}.png`);
+	console.log(props.from);
+	console.log(parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0);
+	return (
+		<Image
+			styleSheet={{
+				width: '20px',
+				height: '20px',
+				borderRadius: '50%',
+				display: 'inline-block',
+				marginRight: '8px',
+			}}
+			src={image}
+
+			onError={() => {
+				console.log(appConfig.profileImgs[parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0]);
+				console.log(parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0);
+				setImage(appConfig.profileImgs[parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0]);
+			}}
+		/>
 	)
 }

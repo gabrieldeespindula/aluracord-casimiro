@@ -23,7 +23,7 @@ function Title(props) {
 export default function PaginaInicial() {
 	const [username, setUsername] = React.useState('');
 	const [disabledSubmit, setDisabledSubmitButton] = React.useState('true');
-	// const [name, setName] = React.useState();
+	const [userImg, setUserImg] = React.useState();
 	const router = useRouter();
 
 	return (
@@ -96,15 +96,7 @@ export default function PaginaInicial() {
 								function (event) {
 									const value = event.target.value;
 									setUsername(value);
-									// setName(value);
-
-									// fetch(`http://api.github.com/users/${value}`).then(data => {
-									// 	return data.json();
-									// }).then(jsonData => {
-									// 	if (jsonData.name) {
-									// 		setName(jsonData.name)
-									// 	}
-									// })
+									setUserImg(`https://github.com/${value}.png`);
 
 									setDisabledSubmitButton(value.length <= 2);
 								}
@@ -157,7 +149,10 @@ export default function PaginaInicial() {
 								borderRadius: '50%',
 								marginBottom: '16px',
 							}}
-							src={`https://github.com/${username}.png`}
+							src={userImg}
+							onError={() => {
+								setUserImg('https://pbs.twimg.com/profile_images/1429865698684178432/ZK3KmpzI_400x400.jpg');
+							}}
 						/>
 						<Text
 							variant="body4"
