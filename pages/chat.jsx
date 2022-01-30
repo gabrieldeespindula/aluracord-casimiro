@@ -24,10 +24,16 @@ function CheckRealTimeMessage(addMessage, updatedMessageFunction) {
 export default function ChatPage() {
 	const router = useRouter();
 	const username = router.query.username;
+
 	const [message, setMessage] = React.useState();
 	const [messageList, setMessageList] = React.useState([]);
 
 	React.useEffect(() => {
+
+		if (!username) {
+			router.push('/')
+		}
+
 		supabaseClient
 			.from('messages')
 			.select('*')

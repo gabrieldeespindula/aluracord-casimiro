@@ -30,6 +30,7 @@ function GlobalStyles() {
 export default function app({ Component, pageProps }) {
 	return (
 		<>
+			<title>Aluracod do Cazé</title>
 			<GlobalStyles />
 			<Component {...pageProps} />
 		</>
