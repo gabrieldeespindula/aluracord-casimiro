@@ -77,5 +77,3 @@ export default function error() {
 		</Box>
 	)
 }
-
-// https://pbs.twimg.com/media/FDnjrHZWYAMLZ3W.jpg
