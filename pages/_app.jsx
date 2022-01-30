@@ -1,3 +1,5 @@
+import Head from "next/head";
+
 function GlobalStyles() {
 	return (
 		<style global jsx>{`
@@ -30,6 +32,10 @@ function GlobalStyles() {
 export default function app({ Component, pageProps }) {
 	return (
 		<>
+			<Head>
+				<title>Aluracod do Cazé</title>
+				<link rel="icon" type="image/x-icon" href="/favicon.png"></link>
+			</Head>
 			<GlobalStyles />
 			<Component {...pageProps} />
 		</>
