@@ -8,6 +8,7 @@ import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ1OTUyNywiZXhwIjoxOTU5MDM1NTI3fQ.wXWeZGgrfHGAxh-VjO4vM8k9CdI-FxTKNs6HBkUetsc';
 const SUPABASE_URL = 'https://zuwkpddkqbciiykoggfo.supabase.co';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const dafultUsername = `Anonymous${(Math.floor(Math.random() * (9999 - 1 + 1)) + 1).toString()}`;
 
 function CheckRealTimeMessage(addMessage, updatedMessageFunction) {
 	return supabaseClient
@@ -23,16 +24,12 @@ function CheckRealTimeMessage(addMessage, updatedMessageFunction) {
 
 export default function ChatPage() {
 	const router = useRouter();
-	const username = router.query.username;
+	const username = router.query.username || dafultUsername;
 
 	const [message, setMessage] = React.useState();
 	const [messageList, setMessageList] = React.useState([]);
 
 	React.useEffect(() => {
-
-		if (!username) {
-			router.push('/')
-		}
 
 		supabaseClient
 			.from('messages')
@@ -269,7 +266,6 @@ function MessageList(props) {
 		>
 
 			{messages.map((actualMessage) => {
-				const [imgLink, setImgLink] = React.useState(`https://github.com/${actualMessage.from}.png`);
 
 				return (
 					<Text
@@ -301,10 +297,10 @@ function MessageList(props) {
 									display: 'inline-block',
 									marginRight: '8px',
 								}}
-								src={imgLink}
+								src={`https://github.com/${actualMessage.from}.png`}
 
-								onError={() => {
-									setImgLink('https://pbs.twimg.com/profile_images/1429865698684178432/ZK3KmpzI_400x400.jpg');
+								onError={(element) => {
+
 								}}
 
 							/>
@@ -370,6 +366,7 @@ function MessageList(props) {
 					</Text>
 				)
 			})}
+
 		</Box>
 	)
 }
