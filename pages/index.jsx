@@ -23,7 +23,7 @@ function Title(props) {
 export default function PaginaInicial() {
 	const [username, setUsername] = React.useState('');
 	const [disabledSubmit, setDisabledSubmitButton] = React.useState('true');
-	const [userImg, setUserImg] = React.useState();
+	const [userImg, setUserImg] = React.useState('https://pbs.twimg.com/profile_images/1429865698684178432/ZK3KmpzI_400x400.jpg');
 	const router = useRouter();
 
 	return (
