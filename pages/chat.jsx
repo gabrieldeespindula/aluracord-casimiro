@@ -401,7 +401,7 @@ function ImagemUser(props) {
 			src={image}
 
 			onError={() => {
-				setImage(`./profilePictures/${parseInt(props.from.replace(/[^0-9]/g, '').substr(0, 1)) || 0}.png`);
+				setImage(`./profilePictures/${parseInt(props.from.replace(/[^0-9]/g, '').substr(-1)) || 0}.png`);
 			}}
 		/>
 	)
