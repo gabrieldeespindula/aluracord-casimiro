@@ -28,6 +28,7 @@ export default function ChatPage() {
 
 	const [message, setMessage] = React.useState();
 	const [messageList, setMessageList] = React.useState([]);
+	const [loading, setLoading] = React.useState(true);
 
 	React.useEffect(() => {
 
@@ -38,6 +39,7 @@ export default function ChatPage() {
 			.order('id', { ascending: false })
 			.then(({ data }) => {
 				setMessageList(data);
+				setLoading(false);
 			});
 
 		const subscription = CheckRealTimeMessage(
@@ -126,6 +128,33 @@ export default function ChatPage() {
 				>
 
 					<MessageList messages={messageList} removeMessageById={removeMessageById} username={username} />
+
+					{loading && (
+						<Box
+							styleSheet={{
+								position: 'absolute',
+								left: '0',
+								bottom: '0',
+								right: '0',
+								top: '0',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								flexDirection: 'column'
+							}}
+						>
+
+							<Image
+								src='https://c.tenor.com/PZXYd_6R5Y4AAAAC/cazerodando-caze.gif'
+								styleSheet={{
+									borderRadius: '50%',
+									width: '200px',
+									height: '200px',
+								}}
+							></Image>
+							Carregando...
+						</Box>
+					)}
 
 					<Box
 						as="form"
